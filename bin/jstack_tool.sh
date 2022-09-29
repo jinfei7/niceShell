@@ -21,19 +21,28 @@ if [ ! -d "$outDir" ]; then
 mkdir -p "$outDir"
 fi
 
-#awk的用法，一行中的打印第二个参数，表示进程ID
-PIDS=`ps -ef | grep  java | grep "${SERVER_NAME}" |awk '{print $2}'`
-echo $PIDS
+
 #校验进程ID是否存在
-if [ -z "$PIDS" ]; then
-    echo "ERROR: The $SERVER_NAME does not started"
-    exit 1
-fi
+while (true); do
+  #awk的用法，一行中的打印第二个参数，表示进程ID
+  PIDS=`ps -ef | grep  java | grep "${SERVER_NAME}" |awk '{print $2}'`
+
+  #不为空则进程存在
+  if [ ! -z "$PIDS" ]; then
+    break
+  fi
+  # 为空则睡眠3秒继续执行 用户可 control + c 取消
+  echo "ERROR: The $SERVER_NAME does not started, try it after 3 seconds"
+  sleep 3
+done
+
+
 #校验获取到的PID是否唯一
 pid_len=${#PIDS[*]}
 if [ ${pid_len} != 1 ]; then
     echo "ERROR: The $SERVER_NAME length is ${pid_len} . The PID length must be 1,please correct the shell script  "
     exit 1
+
 fi
 
 # 循环次数是用户指定的
