@@ -1,8 +1,10 @@
 #!/bin/bash
-JAVA_PATH_CUSTOM=/usr/local/jdk8 #JDK目录
+JAVA_HOME_CUSTOM=/usr/local/jdk8 #JDK目录
+
 SERVER_NAME=$1 #服务名称 如 base-server
 FILECOUNT=$2; #生成几个jstack文件
 SLEEP_TIME=3; #间隔多久生成下一个jstack文件
+
 outDir=/opt/jstack_log/${SERVER_NAME}/  #jstack文件输出路径
 
 #检查 JAVA_HOME
@@ -10,10 +12,10 @@ function validate_java_home() {
     JAVA_BIN=`which java`
     #echo ${JAVA_BIN} #调试用
 
-    JAVA_HOME=`realpath ${JAVA_BIN}`
+    JAVA_PATH=`realpath ${JAVA_BIN}`
     #echo ${JAVA_HOME}
 
-    BASE_NAME=`basename ${JAVA_HOME}`
+    BASE_NAME=`basename ${JAVA_PATH}`
     #echo ${BASE_NAME}
 
 
@@ -21,21 +23,25 @@ function validate_java_home() {
 
     then
 
-        JAVA_HOME=`dirname  ${JAVA_HOME}`
-        #echo "JAVA_HOME: "  ${JAVA_HOME}
+        JAVA_PATH=`dirname  ${JAVA_PATH}`
+        JAVA_HOME=`dirname  ${JAVA_PATH}`
+        echo "JAVA_HOME: "  ${JAVA_HOME}
 
-        BASE_NAME=`basename ${JAVA_HOME}`
-        #echo "BASE_NAME: "  ${BASE_NAME}
+        #BASE_NAME=`basename ${JAVA_PATH}`
+        echo "BASE_NAME: "  ${BASE_NAME}
 
     else
 
-        JAVA_PATH=${JAVA_PATH_CUSTOM}
-        echo "JAVA_HOME not found , use default JAVA_HOME with ${JAVA_PATH_CUSTOM}"
+        JAVA_HOME=${JAVA_HOME_CUSTOM}
+        echo "JAVA_HOME not found , use default JAVA_HOME with ${JAVA_HOME_CUSTOM}"
     fi
 
+    JAVA_PATH=${JAVA_HOME}/bin
 }
 
 validate_java_home
+
+
 
 #如果不输入参数 退出
 if [ -z ${SERVER_NAME} ]; then
@@ -88,7 +94,7 @@ do
     echo "Doing jstack the $SERVER_NAME ..."
     for PID in $PIDS ; do
         #先用jstack命令打印出堆栈信息
-        ${JAVA_PATH}/bin/jstack -l $PID > $filePath
+        ${JAVA_PATH}/jstack -l $PID > $filePath
         echo "jstack dump Success!"
         echo "dump File: ${filePath}"
         #睡眠1秒
