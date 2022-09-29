@@ -1,5 +1,5 @@
 #!/bin/bash
-JAVA_HOME_CUSTOM=/usr/local/jdk8 #JDK目录
+JAVA_HOME_CUSTOM=/usr/local/jdk8 #JDK目录 如果不配置 则JAVA_HOME=当前java命令所在目录
 
 SERVER_NAME=$1 #服务名称 如 base-server
 FILECOUNT=$2; #生成几个jstack文件
@@ -9,34 +9,43 @@ outDir=/opt/jstack_log/${SERVER_NAME}/  #jstack文件输出路径
 
 #检查 JAVA_HOME
 function validate_java_home() {
-    JAVA_BIN=`which java`
-    #echo ${JAVA_BIN} #调试用
 
-    JAVA_PATH=`realpath ${JAVA_BIN}`
-    #echo ${JAVA_HOME}
+  if [ -z ${JAVA_HOME_CUSTOM} ]
 
-    BASE_NAME=`basename ${JAVA_PATH}`
-    #echo ${BASE_NAME}
+  then
+
+        JAVA_BIN=`which java`
+        #echo ${JAVA_BIN} #调试用
+
+        JAVA_PATH=`realpath ${JAVA_BIN}`
+        #echo ${JAVA_HOME}
+
+        BASE_NAME=`basename ${JAVA_PATH}`
+        #echo ${BASE_NAME}
 
 
-    if [[ ${BASE_NAME} == "bin" || ${BASE_NAME} == "jre" || ${BASE_NAME} == "java" ]]
+        if [[ ${BASE_NAME} == "bin" || ${BASE_NAME} == "jre" || ${BASE_NAME} == "java" ]]; then
 
-    then
+            JAVA_PATH=`dirname  ${JAVA_PATH}`
+            JAVA_HOME=`dirname  ${JAVA_PATH}`
 
-        JAVA_PATH=`dirname  ${JAVA_PATH}`
-        JAVA_HOME=`dirname  ${JAVA_PATH}`
-        echo "JAVA_HOME: "  ${JAVA_HOME}
 
-        #BASE_NAME=`basename ${JAVA_PATH}`
-        echo "BASE_NAME: "  ${BASE_NAME}
+        fi
+  else
 
-    else
+    JAVA_HOME=${JAVA_HOME_CUSTOM}
 
-        JAVA_HOME=${JAVA_HOME_CUSTOM}
-        echo "JAVA_HOME not found , use default JAVA_HOME with ${JAVA_HOME_CUSTOM}"
-    fi
+  fi
+
+  if [ -z ${JAVA_HOME}  ]; then
+    echo "JAVA_HOME not found, Please set the [ JAVA_HOME_CUSTOM ] in jstack_tool.sh"
+    exit 0;
+  fi
 
     JAVA_PATH=${JAVA_HOME}/bin
+    echo "JAVA_HOME: "  ${JAVA_HOME}
+    echo "JAVA_PATH: "  ${JAVA_PATH}
+
 }
 
 validate_java_home
