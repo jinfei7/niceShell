@@ -32,7 +32,7 @@ while (true); do
     break
   fi
   # 为空则睡眠3秒继续执行 用户可 control + c 取消
-  echo "ERROR: The $SERVER_NAME does not started, try it after 3 seconds"
+  echo "ERROR: The [ $SERVER_NAME ] service does not started, try it after 3 seconds"
   sleep 3
 done
 
@@ -40,7 +40,7 @@ done
 #校验获取到的PID是否唯一
 pid_len=${#PIDS[*]}
 if [ ${pid_len} != 1 ]; then
-    echo "ERROR: The $SERVER_NAME length is ${pid_len} . The PID length must be 1,please correct the shell script  "
+    echo "ERROR: The [ $SERVER_NAME ] service length is ${pid_len} . The PID length must be 1,please correct the shell script  "
     exit 1
 
 fi
