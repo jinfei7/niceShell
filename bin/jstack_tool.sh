@@ -1,9 +1,12 @@
 #!/bin/bash
-JAVA_PATH=/usr/local/jdk8 #JDK目录
+#JAVA_PATH=/usr/local/jdk8 #JDK目录
 SERVER_NAME=$1 #服务名称 如 base-server
 FILECOUNT=$2; #生成几个jstack文件
 SLEEP_TIME=3; #间隔多久生成下一个jstack文件
 outDir=/opt/jstack_log/${SERVER_NAME}/  #jstack文件输出路径
+
+echo "1213123123123"
+echo ${JAVA_PATH}
 
 #如果不输入参数 退出
 if [ -z ${SERVER_NAME} ]; then
