@@ -1,5 +1,5 @@
 #!/bin/bash
-#JAVA_PATH=/usr/local/jdk8 #JDK目录
+JAVA_PATH_CUSTOM=/usr/local/jdk8 #JDK目录
 SERVER_NAME=$1 #服务名称 如 base-server
 FILECOUNT=$2; #生成几个jstack文件
 SLEEP_TIME=3; #间隔多久生成下一个jstack文件
@@ -8,38 +8,31 @@ outDir=/opt/jstack_log/${SERVER_NAME}/  #jstack文件输出路径
 #检查 JAVA_HOME
 function validate_java_home() {
     JAVA_BIN=`which java`
-
-    echo ${JAVA_BIN}
-
-
+    #echo ${JAVA_BIN} #调试用
 
     JAVA_HOME=`realpath ${JAVA_BIN}`
-
-    echo ${JAVA_HOME}
-
-
+    #echo ${JAVA_HOME}
 
     BASE_NAME=`basename ${JAVA_HOME}`
-
-    echo ${BASE_NAME}
-
+    #echo ${BASE_NAME}
 
 
-    while [[ ${BASE_NAME} == "bin" || ${BASE_NAME} == "jre" || ${BASE_NAME} == "java" ]]
+    if [[ ${BASE_NAME} == "bin" || ${BASE_NAME} == "jre" || ${BASE_NAME} == "java" ]]
 
-    do
+    then
 
         JAVA_HOME=`dirname  ${JAVA_HOME}`
-
-         echo "JAVA_HOME: "  ${JAVA_HOME}
+        #echo "JAVA_HOME: "  ${JAVA_HOME}
 
         BASE_NAME=`basename ${JAVA_HOME}`
+        #echo "BASE_NAME: "  ${BASE_NAME}
 
-        echo "BASE_NAME: "  ${BASE_NAME}
+    else
 
-    done
+        JAVA_PATH=${JAVA_PATH_CUSTOM}
+        echo "JAVA_HOME not found , use default JAVA_HOME with ${JAVA_PATH_CUSTOM}"
+    fi
 
-    echo ${JAVA_HOME}
 }
 
 validate_java_home
