@@ -54,7 +54,7 @@ validate_java_home
 
 #如果不输入参数 退出
 if [ -z ${SERVER_NAME} ]; then
-    echo "ERROR: Enter the [SERVER_NAME] please, Such as 'sh jstack_tool.sh SERVER_NAME FILE_COUNT' "
+    echo "ERROR: Enter the [PID] please, Such as 'sh jstack_tool.sh PID FILE_COUNT' "
     exit 0;
 fi
 
